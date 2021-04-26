@@ -4,3 +4,77 @@ body
     background-color: black; 
     color: yellowgreen; 
 }
+
+.image
+{
+    border: solid green;
+    margin:5px;
+
+}
+
+img:hover {
+    border: solid red;
+    }
+
+
+.modal 
+{
+    display: none; 
+    position: fixed;
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto;
+    /*background-color: rgb(0,0,0); */
+
+  }
+
+
+.modal-content 
+{
+    background-color: lightgrey;
+    color:black;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+#field
+{
+    color:red;
+}
+
+#other_best_movie, #cat_1, #cat_2
+{
+    text-align: center;
+}
+
+.arrowLeft,.arrowRight
+{
+    cursor: pointer;
+    /*transition: opacity 0.3s ease;
+    opacity: 0;*/
+    position: absolute;
+    display: inline;
+    
+    font-size: 100px;
+    color: rgba(220, 220, 220, 0.8);
+    /*background-color: rgba(0, 0, 0, 0.8);*/
+    padding: 10px;
+
+}
+.arrowLeft {
+    left: 0;
+}
+
+.arrowRight {
+    right: 0;
+}
+
+.divImage
+{
+    display: inline;
+    margin: 0 10px;
+}
