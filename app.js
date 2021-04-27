@@ -6,55 +6,39 @@ main();
 async function main()
 {
     const API_URL = "http://localhost:8000/api/v1/titles/";
-    const numberMax = 7;    //nombre de films a afficher par catégorie
+    const nbMoviesLoad = 7;    //nombre de films téléchargés par catégorie
     const cat1 = 'action';
     const cat2 = 'animation';
 
     let moviesById={};  //tableau dynamique contenant tous les films clé: id du film / valeur: données du film
     let nbImg = 4; //nombre d'image afficher par catégorie
-    let indexStart;
+    //let indexStart;
 
     //le meilleur film
     let idBestMovie = await findIdBestMovie(API_URL+'?sort_by=-imdb_score&page=');
     let dataMovie = await getDatasMovieById(API_URL,idBestMovie);
     moviesById[dataMovie.id.toString()]=dataMovie;
-
-    displayDatas(dataMovie,'title', "title_best_movie");
-    displayDatas(dataMovie,'description', "description_best_movie");
-    displayDatas(dataMovie,'image_url', "best_movie");
+    displayDatasBestMovie(dataMovie);
 
     //les autres meilleurs films
-    let betsOfMovies = await getBestMovies(API_URL, idBestMovie,numberMax, 'allCat');
+    let betsOfMovies = await getBestMovies(API_URL, idBestMovie,nbMoviesLoad, 'allCat');
     //displayBestMoviesImages(betsOfMovies, "other_best_movie");
     moviesById = findMovieById(betsOfMovies, moviesById);
-
     //idImageArray(betsOfMovies);
+    displayAllImges(nbImg, betsOfMovies, "other_best_movie");
     
-    createDivImg(nbImg,"other_best_movie");
-    createCarouselArrow("other_best_movie");
-    displayImg(nbImg, betsOfMovies, 0,"other_best_movie");
-    carousel(nbImg,betsOfMovies,0,"other_best_movie");
-    
-
     //meilleurs films de la catégorie 1 
-    let betsOfMoviesCat1 = await getBestMovies(API_URL, idBestMovie,numberMax, cat1);
+    let betsOfMoviesCat1 = await getBestMovies(API_URL, idBestMovie,nbMoviesLoad, cat1);
     //displayBestMoviesImages(betsOfMoviesCat1, "cat_1");
     moviesById = findMovieById(betsOfMoviesCat1, moviesById);
-
-    createDivImg(nbImg,"cat_1");
-    createCarouselArrow("cat_1");
-    displayImg(nbImg, betsOfMoviesCat1, 0,"cat_1");
-    carousel(nbImg,betsOfMoviesCat1,0,"cat_1");
+    displayAllImges(nbImg, betsOfMoviesCat1, "cat_1");
     
     //meilleurs films de la catégorie 2
-    let betsOfMoviesCat2 = await getBestMovies(API_URL, idBestMovie,numberMax, cat2);
+    let betsOfMoviesCat2 = await getBestMovies(API_URL, idBestMovie,nbMoviesLoad, cat2);
     //displayBestMoviesImages(betsOfMoviesCat2, "cat_2");
     moviesById = findMovieById(betsOfMoviesCat2, moviesById);
-
-    createDivImg(nbImg,"cat_2");
-    createCarouselArrow("cat_2");
-    displayImg(nbImg, betsOfMoviesCat2, 0,"cat_2");
-    carousel(nbImg,betsOfMoviesCat2,0,"cat_2");
+    displayAllImges(nbImg, betsOfMoviesCat2, "cat_2");
+   
 
     clicOnImage(moviesById);
     clickOnOpenButton(moviesById, idBestMovie);
@@ -96,8 +80,15 @@ function displayImg(nbImg, data, indexStart, container)
 };
 
 
-
-
+function displayAllImges(nbImg, data, container)
+// gestion de l'affichage des images des films via le carrousel
+{
+    const indexStart = 0;
+    createDivImg(nbImg,container);
+    createCarouselArrow(container);
+    displayImg(nbImg, data, indexStart,container);
+    carousel(nbImg,data,indexStart,container);
+}
 
 
 
@@ -114,37 +105,25 @@ function findMovieById(data, moviesById)
     return moviesById;
 };
 
-
-function displayBestMoviesImages(data, selector)
+/*
+function displayBestMoviesImages(data, container)
     {
         for (i in data)
         {
-            displayDatas(data[i],"image_url",selector);
+            displayDatas(data[i],"image_url",container);
         };
-    };
+    };*/
 
 
-
-function displayDatas(data,dataName,selector)
+function displayDatasBestMovie(data)
 {
-    switch (dataName) 
-    {
-        case 'title':
-            document.getElementById(selector).innerHTML= `<h2>${data.title}</h2>`;
-            break;
-        case 'description':
-            document.getElementById(selector).innerHTML= `<p>${data.description}</p>`;
-            break;
-        case 'image_url':
-            let newImg = document.createElement("img");
-            newImg.src = data.image_url;
-            newImg.id = data.id;
-            newImg.setAttribute("class", "image"); 
-            document.getElementById(selector).appendChild(newImg);
-            break;
-    };
-
-
+    let newImg = document.createElement("img");
+    newImg.src = data.image_url;
+    newImg.id = data.id;
+    newImg.setAttribute("class", "image");         
+    document.getElementById("title_best_movie").innerHTML= `<h2>${data.title}</h2>`;
+    document.getElementById("description_best_movie").innerHTML= `<p>${data.description}</p>`;
+    document.getElementById("best_movie").appendChild(newImg);
 };
 
 
@@ -276,7 +255,7 @@ function clickOnOpenButton(movieById,idBestMovie)
     let openBtn = document.getElementById("openBtn");
     openBtn.onclick = function()
     {
-        document.getElementById("boxModal").style.display = "block";
+        document.getElementById("box_modal").style.display = "block";
         displayDatasInModal(movieById[idBestMovie.toString()]);
         clickOnCloseButton();
     };
@@ -293,7 +272,7 @@ function clicOnImage(movieById)
     {
     imgCliked[i].addEventListener('click',  function(event) 
         {           
-            document.getElementById("boxModal").style.display = "block";
+            document.getElementById("box_modal").style.display = "block";
             displayDatasInModal(movieById[event.path[0].id.toString()]);   
             clickOnCloseButton();
         })
@@ -303,26 +282,37 @@ function clicOnImage(movieById)
 
 function clickOnCloseButton()
 {
-    let closeBtn = document.getElementById("closeBtn");
+    let closeBtn = document.getElementById("close_btn");
     closeBtn.onclick = function()
     {
-        document.getElementById("boxModal").style.display = "none";
+        document.getElementById("box_modal").style.display = "none";
     };
 
 };
 
 function displayDatasInModal(data)
 {
-    document.getElementById("datas_modal").innerHTML= `<p><span id='field'>Title :</span>  ${data.title}  <br>
-                                                                Description :  ${data.description}  <br> 
-                                                                Gender(s) :   ${data.gender} <br>
-                                                                Publication: ${data.date_published} <br> 
-                                                                Rated: ${data.rated} <br>
-                                                                
-                                                                
-                                                                </p> `; 
-
-
+    document.getElementById("datas_modal_text").innerHTML= 
+        `<h3> ${data.title}</h3>
+        <p><span class='modalItems'>Description:</span> ${data.description}  <br> 
+        <span class='modalItems'>Gender(s):</span> ${data.gender} <br>
+        <span class='modalItems'>Publication:</span> ${data.date_published} <br> 
+        <span class='modalItems'>Rated:</span> ${data.rated} <br>
+        <span class='modalItems'>Score Imdb:</span> ${data.imdb_score} <br>
+        <span class='modalItems'>Director(s):</span> ${data.directors} <br>
+        <span class='modalItems'>Actors:</span> ${data.actors} <br>
+        <span class='modalItems'>Durée:</span> ${data.duration} <br>
+        <span class='modalItems'>Pays:</span> ${data.countries} <br>
+        </p> `; 
+    //let modalImg = document.createElement("img");
+    let modalImg = document.querySelector("#modal_img");
+    modalImg.src = data.image_url;
+   //console.log(data.image_url);
+    //console.log(modalImg);
+    //modalImg.id = data.id + '_modal';
+    //modalImg.setAttribute("class", "imageModal"); 
+    //document.getElementById("img").appendChild(modalImg);
+    //document.getElementById("datas_modal_img").HTMLImageElement.modalImg;
 };
 
 
@@ -331,12 +321,12 @@ function createCarouselArrow(container)
 {
     let divArrowLeft = document.createElement("div");
     divArrowLeft.id = 'arrowLeft_'+container;
-    divArrowLeft.setAttribute("class", "arrowLeft"); 
+    divArrowLeft.setAttribute("class", "arrowLeft unselectable"); 
     document.getElementById(container).appendChild(divArrowLeft).textContent= "<";
 
     let divArrowRight = document.createElement("div");
     divArrowRight.id = 'arrowRight_'+container;
-    divArrowRight.setAttribute("class", "arrowRight"); 
+    divArrowRight.setAttribute("class", "arrowRight unselectable"); 
     document.getElementById(container).appendChild(divArrowRight).textContent= ">";
 
 };
