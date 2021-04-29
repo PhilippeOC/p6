@@ -11,19 +11,22 @@
 <body>
   <header class ="header">
     <h1>JustStreamIt</h1>
-  </header>  
+  </header> 
 
 
     
-    <p>Le meilleur film</p>
+  
     <div id="best_movie">
-        <h2 id='title_best_movie'></h2>
+      <div class="bestMovieInfos">
+        <h1 id='title_best_movie'></h1>
         <p id="description_best_movie"> </p>
+        <button id="openBtn" class ="button">Plus d'infos</button>
+      </div>
     <!--<img src='' id='img_best_movie' class="image"></img>-->
 
     </div>
 
-    <button id="openBtn" class ="button">Plus d'infos</button>
+    
     
     <!-- fenêtre modale -->
     <div id="box_modal" class="modal">
@@ -42,15 +45,15 @@
       
       
 
-    <p>Les 7 meilleurs films</p>
+    <h3 id="top_rated_movies" class="categoryName">Les meilleurs films</h3>
     <div id="other_best_movie">  
     </div>
 
-    <p>Catégorie: Action </p>
+    <h3 id="top_rated_movies_cat_1" class="categoryName">Catégorie 1  </h3>
     <div id="cat_1">
     </div>
 
-    <p>Catégorie: Animation </p>
+    <h3 id="top_rated_movies_cat_2" class="categoryName">Catégorie 2 </h3>
     <div id="cat_2"></div>
     
     <script src="app.js"></script> 

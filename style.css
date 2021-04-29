@@ -5,18 +5,99 @@ body
     color: yellowgreen; 
 }
 
+.header
+{
+    margin-top: 20px;
+    margin-bottom: 25 px;
+}
+.categoryName
+{
+    text-align: center;
+    
+}
+
+.unselectable 
+{ 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;    
+} 
+
+
 .image
 {
     border: solid green;
-    margin:5px;
+    cursor: pointer;
 
 }
 
-.image:hover {
+.image:hover 
+{
     border: solid red;
-    }
+}
+
+.divImage
+{
+    display: inline;
+    margin: 0 10px;
+}
 
 
+/* best movie */
+.imageBestMovie
+{
+    width: 20%;
+    height: auto;
+    margin-left: 15px;
+}
+.bestMovieInfos
+{
+    position:relative;
+    width: 40%;
+    margin-right: 30px;
+    border:  solid green;
+    padding: 0 15px 0 15px;
+}
+
+#best_movie
+{
+    margin-top: 40px;
+    margin-bottom: 80px;
+    display: flex;
+    justify-content: center;
+}
+#title_best_movie
+{
+    text-align: center;
+}
+#description_best_movie
+{
+    text-align: justify;
+    padding: 0 5px;
+    height: 200px;
+    overflow: auto;
+}
+
+.button
+{
+    position:absolute;
+    bottom: 8px;
+    padding: 10px;
+    border: 5px solid green;
+    background-color: lightgray; 
+    border-radius: 10px;
+    color: black;
+    font-size: 15px;
+}
+
+.button:hover
+{
+    border: 5px solid red;
+}
+
+/* modal windows */
 .modal 
 {
     display: none; 
@@ -36,9 +117,8 @@ body
     background-color: lightgrey;
     display:flex;
     flex-wrap:wrap;
-    overflow: auto;
     color:black;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
     width: 70%; 
@@ -47,6 +127,7 @@ body
 #datas_modal_text
 {
     width: 50%;
+
 }
 #datas_modal_img{
     width: 50%; 
@@ -65,22 +146,16 @@ body
     margin-right: auto;
     margin-top: 20px;
 }
-/*
-#datas_modal_text
-{
-    
-    float:left;
-    width: 50%;
 
+.buttonClose
+{
+    border: 3px solid green;
+    background-color: lightgray; 
+    border-radius: 10px;
+    color: black;
+    font-size: 15px;
 }
 
-
-#datas_modal_img{
-    margin-top: 20px;
-    margin-left: 50%; 
-
-    
-}*/
 
 
 #button_modal
@@ -93,47 +168,30 @@ body
 
 #other_best_movie, #cat_1, #cat_2
 {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+
 }
 
 .arrowLeft,.arrowRight
 {
     cursor: pointer;
-    /*transition: opacity 0.3s ease;
-    opacity: 0;*/
-    position: absolute;
+    position: relative;
     display: inline;
-    
     font-size: 100px;
     color: rgba(220, 220, 220, 0.8);
-    /*background-color: rgba(0, 0, 0, 0.8);*/
     padding: 10px;
 }
 
-
-.unselectable { 
-    -webkit-user-select: none; 
-    -webkit-touch-callout: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none;    
-    } 
-
-
-
-
-
-
-.arrowLeft {
-    left: 0;
-}
-
-.arrowRight {
-    right: 0;
-}
-
-.divImage
+.arrowLeft 
 {
-    display: inline;
-    margin: 0 10px;
+    margin-right: 10px;
 }
+
+.arrowRight 
+{
+    margin-left: 10px;
+}
+
+
+
