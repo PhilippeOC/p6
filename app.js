@@ -4,13 +4,13 @@ async function main()
 
     const API_URL = "http://localhost:8000/api/v1/titles/";
     const nbMoviesToLoad = 7;    //nombre de films à télécharger par catégorie
-    let nbImg = 4; //nombre d'images affichées simultanément par catégorie
-    const cat1 = 'action';
-    const cat2 = 'biography';
-
+    const nbImg = 4; //nombre d'images affichées simultanément par catégorie
+    const cat = ['films les mieux notés', 'action', 'biography', 'animation'];
+    const divCatImages = ["other_best_movie", "cat_1", "cat_2", "cat_3"];
+    const catTittleId = ["top_rated_movies","top_rated_movies_cat_1", "top_rated_movies_cat_2", "top_rated_movies_cat_3"]
+   
     let moviesById={};  //tableau dynamique contenant tous les films clé: id du film / valeur: données du film
    
-
     //le meilleur film
     let idBestMovie = await findIdBestMovie(API_URL+'?sort_by=-imdb_score&page=');
     let dataMovie = await getDatasMovieById(API_URL,idBestMovie);
@@ -18,28 +18,17 @@ async function main()
     displayDatasBestMovie(dataMovie);
 
     //les autres meilleurs films
-    let betsOfMovies = await getBestMovies(API_URL, idBestMovie,nbMoviesToLoad, 'allCat');
-    moviesById = findMovieById(betsOfMovies, moviesById);
-    displayCategoryName("top_rated_movies",'films les mieux notés');
-    displayAllImges(nbImg, betsOfMovies, "other_best_movie",nbMoviesToLoad);
-    
-    //meilleurs films de la catégorie 1 
-    let betsOfMoviesCat1 = await getBestMovies(API_URL, idBestMovie,nbMoviesToLoad, cat1);
-    moviesById = findMovieById(betsOfMoviesCat1, moviesById);
-    displayCategoryName("top_rated_movies_cat_1",cat1);
-    displayAllImges(nbImg, betsOfMoviesCat1, "cat_1",nbMoviesToLoad);
-
-    //meilleurs films de la catégorie 2
-    let betsOfMoviesCat2 = await getBestMovies(API_URL, idBestMovie,nbMoviesToLoad, cat2);
-    moviesById = findMovieById(betsOfMoviesCat2, moviesById);
-    displayCategoryName("top_rated_movies_cat_2",cat2);
-    displayAllImges(nbImg, betsOfMoviesCat2, "cat_2",nbMoviesToLoad);
-   
+    for (n=0; n < cat.length; n++)
+    {
+        let betsOfMovies = await getBestMovies(API_URL, idBestMovie,nbMoviesToLoad, cat[n]);
+        moviesById = findMovieById(betsOfMovies, moviesById);
+        displayCategoryName(catTittleId[n],cat[n]);
+        displayAllImges(nbImg, betsOfMovies, divCatImages[n],nbMoviesToLoad);
+    }
 
     clicOnImage(moviesById);
     clickOnOpenButton(moviesById, idBestMovie);
 };
-
 
 function displayCategoryName(container,category)
 {
@@ -51,7 +40,6 @@ function displayCategoryName(container,category)
 function createDivImg(nbImg,container)
 {
     for (i=0; i<nbImg; i++)
-    //for (i in nbDiv)
     {
         let divImg = document.createElement("div");
         divImg.id = 'div_'+container+'_' +i.toString();
@@ -63,8 +51,6 @@ function createDivImg(nbImg,container)
         document.getElementById('div_'+container+'_' +i.toString()).appendChild(newImg);
     };  
 };
-
-
 
 function displayImg(nbImg, data, indexStart, container)
 {                
@@ -78,7 +64,6 @@ function displayImg(nbImg, data, indexStart, container)
 
     };
 };
-
 
 function displayAllImges(nbImg, data, container, nbMoviesLoad)
 // gestion de l'affichage des images des films via le carrousel
@@ -107,18 +92,15 @@ function displayDatasBestMovie(data)
     newImg.id = data.id;
     newImg.setAttribute("class", "image imageBestMovie");         
     document.getElementById("title_best_movie").innerHTML= `${data.title}`;
-    //document.getElementById("description_best_movie").innerHTML= `<p>${data.description} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam magna tellus, viverra sit amet elit vel, porta mollis lacus. Nam congue, lacus eget auctor imperdiet, enim neque porttitor ligula, vitae fermentum massa dolor at turpis. Sed fermentum metus eget eros semper sollicitudin. Nunc ornare id magna commodo feugiat. Phasellus ligula arcu, sodales ac dolor eget, eleifend tincidunt lorem. Pellentesque dictum vestibulum nunc id maximus. Nam hendrerit arcu sed ipsum rhoncus placerat. Donec augue lectus, lobortis ut laoreet eu, congue eget ligula. Sed eleifend ut felis eu condimentum. Nam velit lectus, vulputate at dignissim eget, porta vel turpis. Aenean vehicula lectus vitae dolor feugiat, non finibus magna eleifend. Mauris diam tortor, sollicitudin sit amet elementum in, malesuada a magna. Sed congue sit amet dolor sed ultricies.</p>`;
-    
     document.getElementById("description_best_movie").innerHTML= `<p>${data.description} </p>`;
     document.getElementById("best_movie").appendChild(newImg);
 };
-
 
 async function getBestMovies(urlApi, idBestMovie, nbMoviesLoad, category)
 {
     let url;
     let datasBestsMovies = [];
-    if (category == 'allCat')
+    if (category == 'films les mieux notés')
     {
         url = urlApi+'?sort_by=-imdb_score&page=';
     }
@@ -142,15 +124,13 @@ async function getBestMovies(urlApi, idBestMovie, nbMoviesLoad, category)
     return Promise.resolve(datasBestsMovies);
 };
 
-
-
 async function findIdBestMovie(urlApi)
 // retourne l'id du film ayant le meilleur score Imdb et le plus grand nombre de votes (toutes catégories confondues)
 {
     let voteNumber; let idMovie; let scoreMax; let nextPage = true; let page = 1;
     while (nextPage)
     {
-        idBestMovie = await fetch(urlApi + page) 
+        await fetch(urlApi + page) 
             .then(response => response.json())
             .then(datas => 
                 {
@@ -160,7 +140,6 @@ async function findIdBestMovie(urlApi)
                             idMovie = datas.results[0]['id'];
                             voteNumber = datas.results[0]['votes'];
                         }
-                    //for (i=0; i<datas.results.length; i++)
                     for (i in datas.results)
                         {  
                             if (datas.results[i]['imdb_score'] <scoreMax)
@@ -195,7 +174,6 @@ async function getIdMovies(url, number)
             .then(response => response.json())
             .then(datas =>
                 {       
-                    //for (i=0; i<5; i++)
                     for (i in datas.results)
                     {
                         idList.push(datas.results[i].id);
@@ -209,7 +187,6 @@ async function getIdMovies(url, number)
 async function getDatasMovieById(urlApi,idMovie)
 // retourne les données du film dont l'id est passé en paramètre
 {
-    
     let dataOneMovie;
     await fetch(urlApi+idMovie) 
         .then(response => response.json())
@@ -220,22 +197,20 @@ async function getDatasMovieById(urlApi,idMovie)
                     'id':data.id,
                     'image_url': data.image_url,
                     'title': data.title,
-                    'gender': data.genres,
-                    'publication': data.date_published,
+                    'genres': data.genres,
+                    'date_published': data.date_published,
                     'rated': data.rated,
-                    'score': data.imdb_score,
-                    'director' : data.directors,
+                    'imdb_score': data.imdb_score,
+                    'directors' : data.directors,
                     'actors' : data.actors,
-                    'durée':data.duration,
-                    'pays':data.countries,
-                    
+                    'duration':data.duration,
+                    'countries':data.countries,
                     'description': data.description,
                 }
             })
         .catch(err => alert("Une erreur s'est produite", err));
     return Promise.resolve(dataOneMovie);
 };
-
 
 function clickOnOpenButton(movieById,idBestMovie)
 {
@@ -246,23 +221,16 @@ function clickOnOpenButton(movieById,idBestMovie)
         displayDatasInModal(movieById[idBestMovie.toString()]);
         clickOnCloseButton();
     };
-
-
-    
 };
-
 
 function clicOnImage(movieById)
 {
     let imgCliked = document.querySelectorAll('.image');
     for (i=0; i< imgCliked.length; i++)
     {
-
-     
-    imgCliked[i].addEventListener('click',  function(event) 
+    imgCliked[i].addEventListener('click',  (event) =>
         {           
             document.getElementById("box_modal").style.display = "block";
-            console.log(navigator.userAgent.indexOf("Firefox"));
             if (navigator.userAgent.indexOf("Firefox")>=1)
                 {
                     displayDatasInModal(movieById[event.explicitOriginalTarget.id.toString()]);
@@ -277,11 +245,10 @@ function clicOnImage(movieById)
     }
 };
 
-
 function clickOnCloseButton()
 {
     let closeBtn = document.getElementById("close_btn");
-    closeBtn.onclick = function()
+    closeBtn.onclick = () =>
     {
         document.getElementById("box_modal").style.display = "none";
     };
@@ -293,12 +260,12 @@ function displayDatasInModal(data)
     document.getElementById("datas_modal_text").innerHTML= 
         `<h3> ${data.title}</h3>
         <p><span class='modalItems'>Description:</span> ${data.description} <br> 
-        <span class='modalItems'>Gender(s):</span> ${data.gender} <br>
+        <span class='modalItems'>Genre(s):</span> ${data.genres} <br>
         <span class='modalItems'>Publication:</span> ${data.date_published} <br> 
         <span class='modalItems'>Rated:</span> ${data.rated} <br>
         <span class='modalItems'>Score Imdb:</span> ${data.imdb_score} <br>
-        <span class='modalItems'>Director(s):</span> ${data.directors} <br>
-        <span class='modalItems'>Actors:</span> ${data.actors} <br>
+        <span class='modalItems'>Directeur(s):</span> ${data.directors} <br>
+        <span class='modalItems'>Acteurs:</span> ${data.actors} <br>
         <span class='modalItems'>Durée:</span> ${data.duration} <br>
         <span class='modalItems'>Pays:</span> ${data.countries} <br>
         </p> `; 
@@ -307,8 +274,6 @@ function displayDatasInModal(data)
     modalImg.src = data.image_url;
   
 };
-
-
 
 function createCarouselArrow(nbImg,container)
 {
@@ -329,11 +294,12 @@ function createCarouselArrow(nbImg,container)
 
 };
 
+
+
 function carousel(nbImg,data ,indexStart,container,nbMoviesLoad)
 {
     let arrowLeftCliked = document.querySelector('#arrowLeft_'+container);   
-    
-        arrowLeftCliked.addEventListener('click',  function() 
+        arrowLeftCliked.addEventListener('click',  () => 
         {           
             indexStart = indexStart-1;
             if (indexStart<0)
@@ -344,11 +310,8 @@ function carousel(nbImg,data ,indexStart,container,nbMoviesLoad)
         });
 
     let arrowRightCliked = document.querySelector('#arrowRight_'+container);  
-    
-    
-        arrowRightCliked.addEventListener('click',  function() 
-        {           
-            
+        arrowRightCliked.addEventListener('click',  () =>
+        {
             indexStart = indexStart+1;
             if (indexStart>(nbMoviesLoad-nbImg))
             {
@@ -356,30 +319,7 @@ function carousel(nbImg,data ,indexStart,container,nbMoviesLoad)
             } 
             displayImg(nbImg, data, indexStart,container);            
         })
-
-
-    
-        
 };
 
 
 main();
-
- 
-    
-
-
-
-
-/*L’image de la pochette du film
-Le Titre du film
-Le genre complet du film
-Sa date de sortie
-Son Rated
-Son score Imdb
-Son réalisateur
-La liste des acteurs
-Sa durée
-Le pays d’origine
-Le résultat au Box Office
-Le résumé du film*/
