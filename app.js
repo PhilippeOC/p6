@@ -164,7 +164,7 @@ async function findIdBestMovie(urlApi)
 };
 
 async function getIdMovies(url, number)
-// retourne la list des id du multiple de 5 immédiatement supérieur à number films les mieux notés 
+// retourne la liste des id du multiple de 5 immédiatement supérieur à number films les mieux notés 
 {
     let idList=[];
     let nPage = Math.trunc(number/5);
@@ -194,7 +194,7 @@ async function getDatasMovieById(urlApi,idMovie)
             {
                 dataOneMovie = 
                 {
-                    'id':data.id,
+                    'id': data.id,
                     'image_url': data.image_url,
                     'title': data.title,
                     'genres': data.genres,
@@ -294,8 +294,6 @@ function createCarouselArrow(nbImg,container)
 
 };
 
-
-
 function carousel(nbImg,data ,indexStart,container,nbMoviesLoad)
 {
     let arrowLeftCliked = document.querySelector('#arrowLeft_'+container);   
@@ -320,6 +318,5 @@ function carousel(nbImg,data ,indexStart,container,nbMoviesLoad)
             displayImg(nbImg, data, indexStart,container);            
         })
 };
-
 
 main();
